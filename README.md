@@ -1,42 +1,36 @@
-# CompanyPortalSystemTrayTool
-[Blog Post]()
-<p align="left">
-  <a href="https://twitter.com/jannik_reinhard">
-    <img src="https://img.shields.io/twitter/follow/jannik_reinhard?style=social" target="_blank" />
-  </a>
-    <a href="https://github.com/JayRHa">
-    <img src="https://img.shields.io/github/followers/JayRHa?style=social" target="_blank" />
-  </a>
-</p>
+Corrected install instructions
+Download the intune.win file from my repository or create your own intune.win file based on the files in my repository. 
+
+Open the MEM Portal
+Navigate to Apps -> Windows
+Click Add
+Select Windows app (Win32) as App type
+
+Click Select app package file
+Click upload und select the .intunewin file
+Click OK
+
+Give the application a name and customize the app information.
+Click Next
+
+Enter install.bat and deinstall.bat as install/unistall command
+Change the Device restart behavior to No specific action
+Click Next
+
+Select 32-bit and 64-bit as Operation system architecture
+Select a minimum OS Version
+Hints: If you want to specify further requirements, such as minimum free disk space, you can do this in this step.
+It is also possible to specify a file, a registry value or a script as a requirement.
 
 
-A few weeks ago I released the Company Portal System Tray tool. The posts have a very good feedback and the tool was tested by some and also used productively. I have been working on developing the tool further and integrating more useful functions that can help with troubleshooting. The first version of the Company Portal system tray icon has many quick access possibilities to system tools or logs that are important for troubleshooting an Intune managed device. In addition, this tool has a quick access to open the Company Portal.
+Select Manually configure detection rules as Rules format
+Click Add
+Select File as Rule type
+Enter “C:\Windows\_Tools\” as file path and “IntuneSystemTrayV2” as folder.
+The detection method is File or folder exists
+Click Next
 
-In this blog I want to introduce the new version of the Tool.
-![Tool View](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/tooloverview.png)
+Skip the depentencies and supersedence step click next.
+Click Next
 
-
-## Features
-### Sync device
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/syncDevice.png)
-
-### Open Company Portal
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/companyPortal.png)
-
-### Open Quick Assist
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/quickAssist.png)
-
-### Troubleshoot
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/troubleshoot.png)
-
-### System Info
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/systemInfo.png)
-
-### Change Password
-
-![Features](https://github.com/JayRHa/CompanyPortalSystemTrayTool/blob/main/.images/changePassword.png)
+Click Create
