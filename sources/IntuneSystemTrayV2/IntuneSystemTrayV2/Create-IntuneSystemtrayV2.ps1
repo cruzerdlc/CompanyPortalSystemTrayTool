@@ -1,14 +1,20 @@
 <#
-Version: 1.0
-Author: Jannik Reinhard (jannikreinhard.com)
+Version: 2.0
+Remastered Author: Cruzerdlc
+Original Author:Jannik Reinhard (jannikreinhard.com)
 Script: Create-IntuneSystemtray
 Description:
 Create a system tray icon with some company portal functions
 Release notes:
 Version 1.0: Init
+Version 2.0:
+Fixed networking portion not working
+Fixed Last update installed that was also not working
 Inspiration:
 - https://stackoverflow.com/questions/62892229/spawn-powershell-admin-consoles-from-windows-tray
 - https://github.com/damienvanrobaeys/About_my_device
+Original Version
+- https://github.com/JayRHa/CompanyPortalSystemTrayTool
 #> 
 
 #################################################
@@ -62,15 +68,6 @@ $buttonOpenCompanyPortal = $contextmenu.Items.Add("Open Company Portal");
 $buttonOpenCompanyPortal.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\companyPortal.png")
 $buttonOpenCompanyPortal.add_Click({
     explorer.exe shell:appsFolder\Microsoft.CompanyPortal_8wekyb3d8bbwe!App
-})
-
-#############################
-##### Open Quick Assist #####
-#############################
-$buttonOpenQuickAssist = $contextmenu.Items.Add("Open Quick Assist");
-$buttonOpenQuickAssist.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\remoteAssistance.png")
-$buttonOpenQuickAssist.add_Click({
-  & "$env:systemroot\system32\quickassist.exe"
 })
 
 #############################
@@ -149,7 +146,7 @@ $buttonSystemInfo.DropDownItems.Add($buttonSystemInfoHostname)
 
 # IP address
 $buttonSystemInfoIp = New-Object System.Windows.Forms.ToolStripMenuItem
-$ip = (Get-WmiObject -class "Win32_NetworkAdapterConfiguration"  | Where {$_.IPEnabled -Match "True"} | Sort-Object index -uniqu)[0].IPAddress[0]
+$ip = (Get-WmiObject win32_networkadapterconfiguration | where { $_.ipaddress -like "1*" } | select -ExpandProperty ipaddress | select -First 1)
 $buttonSystemInfoIp.Text = ("IP: $ip")
 $buttonSystemInfoIp.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\sysInfo.png")
 $buttonSystemInfo.DropDownItems.Add($buttonSystemInfoIp)
@@ -166,13 +163,6 @@ $uptime = ((Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime).To
 $buttonSystemInfoUptime.Text = ("Uptime: $uptime")
 $buttonSystemInfoUptime.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\sysInfo.png")
 $buttonSystemInfo.DropDownItems.Add($buttonSystemInfoUptime)
-
-# Last Update installation
-$buttonSystemLastUpdateInstallation = New-Object System.Windows.Forms.ToolStripMenuItem
-$lastUpdateInstallation = (( gwmi win32_quickfixengineering |sort installedon -desc )[0].InstalledOn).ToString("yyyy.MM.dd hh:mm")
-$buttonSystemLastUpdateInstallation.Text = ("Last update installation: $lastUpdateInstallation")
-$buttonSystemLastUpdateInstallation.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\sysInfo.png")
-$buttonSystemInfo.DropDownItems.Add($buttonSystemLastUpdateInstallation)
 
 # Enrollment
 $buttonSystemInfoEnrollment = New-Object System.Windows.Forms.ToolStripMenuItem
@@ -195,6 +185,15 @@ $buttonSystemInfoImeStatus.Text = ("Ime Status: $imeStatus")
 $buttonSystemInfoImeStatus.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\sysInfo.png")
 $buttonSystemInfo.DropDownItems.Add($buttonSystemInfoImeStatus)
 
+####################################
+##### Last Update installation #####
+####################################
+$buttonSystemLastUpdateInstallation = $contextmenu.Items.Add("Last Update installation");
+$buttonSystemLastUpdateInstallation.Image = [System.Drawing.Bitmap]::FromFile("$iconPath\remoteAssistance.png")
+$buttonSystemLastUpdateInstallation.add_Click({
+  & "$env:systemroot\system32\WindowsPowerShell\v1.0\powershell.exe" "(New-Object -com "Microsoft.Update.AutoUpdate").Results | fl" > "$env:USERPROFILE\Documents\update.txt"
+  & notepad.exe "$env:USERPROFILE\Documents\update.txt"
+})
 
 #############################
 ##### Change Password #######
